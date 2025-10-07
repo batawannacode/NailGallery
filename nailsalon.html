@@ -1,0 +1,1465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Glamour Nails - Book Your Appointment</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #faf8f6;
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            font-size: 2.8em;
+            margin-bottom: 8px;
+            background: linear-gradient(135deg, #c9a0dc 0%, #b08cc9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 300;
+            letter-spacing: 2px;
+        }
+
+        .tagline {
+            font-size: 1em;
+            color: #8b7891;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .calendar-container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #f0ede9;
+            grid-column: 1 / -1;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 10px;
+        }
+
+        .calendar-nav button {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: #faf8f6;
+            border: 1px solid #f0ede9;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 1.2em;
+            color: #8b7891;
+            padding: 0;
+        }
+
+        .calendar-nav button:hover {
+            background: linear-gradient(135deg, #c9a0dc 0%, #b08cc9 100%);
+            color: white;
+            transform: none;
+        }
+
+        .calendar-month {
+            font-size: 1.4em;
+            color: #5a4a5e;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 8px;
+        }
+
+        .calendar-day-header {
+            text-align: center;
+            padding: 12px;
+            color: #8b7891;
+            font-size: 0.85em;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+        }
+
+        .calendar-day {
+            aspect-ratio: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 8px;
+            border-radius: 10px;
+            background: #fafafa;
+            border: 1px solid #f0ede9;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .calendar-day:hover {
+            background: #f0ede9;
+            transform: scale(1.05);
+        }
+
+        .calendar-day.empty {
+            background: transparent;
+            border: none;
+            cursor: default;
+        }
+
+        .calendar-day.empty:hover {
+            transform: none;
+        }
+
+        .calendar-day.today {
+            background: linear-gradient(135deg, #c9a0dc 0%, #b08cc9 100%);
+            color: white;
+            font-weight: 500;
+        }
+
+        .calendar-day.has-booking {
+            background: #e8f5e9;
+            border-color: #4caf50;
+        }
+
+        .calendar-day.has-booking::after {
+            content: '';
+            position: absolute;
+            bottom: 4px;
+            width: 6px;
+            height: 6px;
+            background: #4caf50;
+            border-radius: 50%;
+        }
+
+        .calendar-day-number {
+            font-size: 0.95em;
+            color: #5a4a5e;
+        }
+
+        .calendar-day.today .calendar-day-number {
+            color: white;
+        }
+
+        .booking-count {
+            font-size: 0.7em;
+            color: #8b7891;
+            margin-top: 2px;
+        }
+
+        .calendar-day.today .booking-count {
+            color: white;
+            opacity: 0.9;
+        }
+
+        .bookings-sidebar {
+            margin-top: 30px;
+            padding-top: 30px;
+            border-top: 1px solid #f0ede9;
+        }
+
+        .booking-item {
+            background: #faf8f6;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 10px;
+            border-left: 3px solid #c9a0dc;
+        }
+
+        .booking-date {
+            font-weight: 500;
+            color: #5a4a5e;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .booking-details {
+            font-size: 0.88em;
+            color: #8b7891;
+            line-height: 1.6;
+        }
+
+        .booking-service {
+            color: #c9a0dc;
+            font-weight: 500;
+        }
+
+        .no-bookings {
+            text-align: center;
+            color: #8b7891;
+            padding: 30px;
+            font-size: 0.95em;
+        }
+
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.06);
+            border: 1px solid #f0ede9;
+        }
+
+        h2 {
+            color: #5a4a5e;
+            margin-bottom: 30px;
+            font-size: 1.6em;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        h3 {
+            color: #7d6b82;
+            margin-bottom: 15px;
+            font-size: 1.2em;
+            font-weight: 400;
+        }
+
+        .form-group {
+            margin-bottom: 24px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            color: #6b5b6f;
+            font-weight: 400;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 1px solid #e8e3df;
+            border-radius: 12px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+            background: #fafafa;
+            font-family: inherit;
+        }
+
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: #c9a0dc;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(201, 160, 220, 0.1);
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #c9a0dc 0%, #b08cc9 100%);
+            color: white;
+            border: none;
+            padding: 16px 32px;
+            border-radius: 12px;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: 400;
+            letter-spacing: 0.5px;
+        }
+
+        button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(201, 160, 220, 0.3);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .api-section {
+            background: #faf8f6;
+            padding: 24px;
+            border-radius: 14px;
+            margin-bottom: 20px;
+            border: 1px solid #f0ede9;
+        }
+
+        .api-label {
+            font-size: 0.9em;
+            color: #8b7891;
+            font-weight: 400;
+            margin-bottom: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            letter-spacing: 0.3px;
+        }
+
+        .api-data {
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            font-size: 0.95em;
+            color: #5a4a5e;
+            border-left: 3px solid #c9a0dc;
+            line-height: 1.7;
+        }
+
+        .price-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 14px;
+        }
+
+        .price-item {
+            background: white;
+            padding: 14px;
+            border-radius: 10px;
+            border: 1px solid #f0ede9;
+        }
+
+        .price-label {
+            color: #8b7891;
+            font-size: 0.85em;
+            margin-bottom: 4px;
+        }
+
+        .price-value {
+            color: #c9a0dc;
+            font-weight: 500;
+            font-size: 1.15em;
+        }
+
+        .success-message {
+            background: linear-gradient(135deg, #a8d8a8 0%, #90c690 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            font-size: 0.95em;
+        }
+
+        .error-message {
+            background: linear-gradient(135deg, #e8a5a5 0%, #d98d8d 100%);
+            color: white;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 20px;
+            display: none;
+            font-size: 0.95em;
+        }
+
+        .warning-message {
+            background: #fff3e0;
+            color: #8b6914;
+            padding: 12px;
+            border-radius: 8px;
+            margin-top: 8px;
+            font-size: 0.88em;
+            border: 1px solid #ffe0b2;
+        }
+
+        .loading {
+            display: none;
+            text-align: center;
+            color: #c9a0dc;
+            margin: 16px 0;
+        }
+
+        .spinner {
+            border: 2px solid #f0ede9;
+            border-top: 2px solid #c9a0dc;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            animation: spin 1s linear infinite;
+            margin: 10px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 400;
+            margin-left: 8px;
+        }
+
+        .status-valid {
+            background: #e8f5e9;
+            color: #4caf50;
+        }
+
+        .status-invalid {
+            background: #ffebee;
+            color: #f44336;
+        }
+
+        .status-checking {
+            background: #fff3e0;
+            color: #ff9800;
+        }
+
+        .weather-info {
+            display: grid;
+            grid-template-columns: auto 1fr;
+            gap: 16px;
+            align-items: center;
+        }
+
+        .weather-icon {
+            font-size: 3em;
+        }
+
+        .weather-details {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .weather-temp {
+            font-size: 1.8em;
+            font-weight: 300;
+            color: #5a4a5e;
+        }
+
+        .weather-desc {
+            color: #8b7891;
+            font-size: 0.95em;
+            text-transform: capitalize;
+        }
+
+        .weather-recommendation {
+            margin-top: 14px;
+            padding: 12px;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #6b5b6f;
+            border: 1px solid #f0ede9;
+        }
+
+        .service-price {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 12px;
+            padding: 14px;
+            background: #faf8f6;
+            border-radius: 10px;
+            border: 1px solid #f0ede9;
+        }
+
+        .original-price {
+            font-size: 1.1em;
+            font-weight: 400;
+            color: #5a4a5e;
+        }
+
+        .payment-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .payment-modal.active {
+            display: flex;
+        }
+
+        .payment-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        .payment-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .payment-header h3 {
+            color: #5a4a5e;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .payment-amount {
+            font-size: 2.5em;
+            font-weight: 300;
+            background: linear-gradient(135deg, #c9a0dc 0%, #b08cc9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .payment-details {
+            background: #faf8f6;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+        .payment-detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            font-size: 0.95em;
+        }
+
+        .payment-detail-label {
+            color: #8b7891;
+        }
+
+        .payment-detail-value {
+            color: #5a4a5e;
+            font-weight: 500;
+        }
+
+        .payment-method {
+            background: #fff;
+            border: 2px solid #f0ede9;
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .payment-method:hover {
+            border-color: #c9a0dc;
+            background: #faf8f6;
+        }
+
+        .payment-method.selected {
+            border-color: #c9a0dc;
+            background: #f8f4fb;
+        }
+
+        .payment-method-icon {
+            font-size: 2em;
+        }
+
+        .payment-method-info h4 {
+            color: #5a4a5e;
+            font-size: 1.1em;
+            margin-bottom: 4px;
+        }
+
+        .payment-method-info p {
+            color: #8b7891;
+            font-size: 0.85em;
+        }
+
+        .payment-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 25px;
+        }
+
+        .payment-buttons button {
+            flex: 1;
+        }
+
+        .btn-cancel {
+            background: #e0e0e0;
+            color: #666;
+        }
+
+        .btn-cancel:hover {
+            background: #d0d0d0;
+        }
+
+        .payment-instructions {
+            background: #fff3e0;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            font-size: 0.9em;
+            color: #8b6914;
+            border: 1px solid #ffe0b2;
+        }
+
+        .payment-instructions ol {
+            margin: 10px 0 0 20px;
+        }
+
+        .payment-instructions li {
+            margin: 5px 0;
+        }
+
+        @media (max-width: 768px) {
+            .main-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            h1 {
+                font-size: 2.2em;
+            }
+
+            .card {
+                padding: 30px 24px;
+            }
+
+            .price-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .payment-content {
+                padding: 30px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>THE NAIL GALLERY</h1>
+            <p class="tagline">Appointment Booking System</p>
+        </header>
+
+        <div class="main-grid">
+            <div class="card">
+                <h2>Book Your Appointment</h2>
+                <form id="bookingForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" required placeholder="Enter your full name">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="email">
+                            Email Address
+                            <span id="emailStatus"></span>
+                        </label>
+                        <input type="email" id="email" required placeholder="your.email@example.com">
+                        <div class="warning-message" id="emailWarning" style="display: none;">
+                            ⚠️ Please enter a valid email to verify
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" required placeholder="+63 XXX XXX XXXX">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="service">Service</label>
+                        <select id="service" required>
+                            <option value="">Select a service</option>
+                            <option value="25">Classic Manicure - $25</option>
+                            <option value="35">Classic Pedicure - $35</option>
+                            <option value="45">Gel Nails - $45</option>
+                            <option value="55">Acrylic Nails - $55</option>
+                            <option value="80">Spa Package - $80</option>
+                        </select>
+                    </div>
+
+                    <div class="service-price" id="priceDisplay" style="display: none;">
+                        <span class="original-price">Total: $<span id="usdPrice">0</span></span>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="date">Preferred Date</label>
+                        <input type="date" id="date" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="time">Preferred Time</label>
+                        <input type="time" id="time" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="notes">Special Requests</label>
+                        <textarea id="notes" placeholder="Any special requests or preferences..."></textarea>
+                    </div>
+
+                    <button type="submit" id="submitBtn">Book Appointment</button>
+                    
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <p>Processing your booking...</p>
+                    </div>
+                    
+                    <div class="success-message" id="successMessage">
+                        ✓ Booking confirmed! Your appointment details will be sent to your email.
+                    </div>
+
+                    <div class="error-message" id="errorMessage">
+                        ✗ Please verify your email address before booking.
+                    </div>
+                </form>
+            </div>
+
+            <div class="card">
+                <h2>Booking Information</h2>
+                
+                <div class="api-section">
+                    <div class="api-label">
+                        <span>📧 Email Verification</span>
+                    </div>
+                    <div class="api-data" id="emailValidation">
+                        Enter your email to verify it's valid and deliverable
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <div class="api-label">
+                        <span>💰 Currency Converter</span>
+                    </div>
+                    <div class="api-data">
+                        <div id="currencyInfo">Select a service to see prices in multiple currencies</div>
+                        <div class="price-grid" id="priceGrid" style="display: none;">
+                            <div class="price-item">
+                                <div class="price-label">Philippine Peso</div>
+                                <div class="price-value">₱<span id="phpPrice">0</span></div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">Euro</div>
+                                <div class="price-value">€<span id="eurPrice">0</span></div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">Japanese Yen</div>
+                                <div class="price-value">¥<span id="jpyPrice">0</span></div>
+                            </div>
+                            <div class="price-item">
+                                <div class="price-label">British Pound</div>
+                                <div class="price-value">£<span id="gbpPrice">0</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="api-section">
+                    <div class="api-label">
+                        <span>🌤️ Weather-Based Recommendations</span>
+                    </div>
+                    <div class="api-data">
+                        <div id="weatherInfo">Checking weather conditions...</div>
+                        <div class="weather-info" id="weatherDetails" style="display: none;">
+                            <div class="weather-icon" id="weatherIcon">☀️</div>
+                            <div class="weather-details">
+                                <div class="weather-temp"><span id="weatherTemp">-</span>°C</div>
+                                <div class="weather-desc" id="weatherDesc">-</div>
+                            </div>
+                        </div>
+                        <div class="weather-recommendation" id="weatherRec" style="display: none;">
+                            💅 Perfect weather for a nail appointment!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="calendar-container">
+            <div class="calendar-header">
+                <h2>Appointment Calendar</h2>
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div class="calendar-month" id="currentMonth"></div>
+                    <div class="calendar-nav">
+                        <button id="prevMonth">‹</button>
+                        <button id="nextMonth">›</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="calendar-grid" id="calendarGrid"></div>
+
+            <div class="bookings-sidebar">
+                <h3>Upcoming Appointments</h3>
+                <div id="bookingsList"></div>
+            </div>
+        </div>
+
+        <!-- Payment Modal -->
+        <div class="payment-modal" id="paymentModal">
+            <div class="payment-content">
+                <div class="payment-header">
+                    <h3>Complete Payment</h3>
+                    <div class="payment-amount">₱<span id="paymentAmount">0</span></div>
+                </div>
+
+                <div class="payment-details">
+                    <div class="payment-detail-row">
+                        <span class="payment-detail-label">Service:</span>
+                        <span class="payment-detail-value" id="paymentService">-</span>
+                    </div>
+                    <div class="payment-detail-row">
+                        <span class="payment-detail-label">Date:</span>
+                        <span class="payment-detail-value" id="paymentDate">-</span>
+                    </div>
+                    <div class="payment-detail-row">
+                        <span class="payment-detail-label">Time:</span>
+                        <span class="payment-detail-value" id="paymentTime">-</span>
+                    </div>
+                </div>
+
+                <div id="paymentMethodSelection">
+                    <h4 style="color: #5a4a5e; margin-bottom: 15px; font-size: 1.1em;">Select Payment Method</h4>
+                    
+                    <div class="payment-method" data-method="gcash" onclick="selectPaymentMethod('gcash')">
+                        <div class="payment-method-icon">💙</div>
+                        <div class="payment-method-info">
+                            <h4>GCash</h4>
+                            <p>Pay securely with your GCash account</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="paymentProcessing" style="display: none;">
+                    <div class="payment-instructions">
+                        <strong>📱 GCash Payment Instructions:</strong>
+                        <ol>
+                            <li>You will be redirected to GCash</li>
+                            <li>Log in to your GCash account</li>
+                            <li>Review and confirm the payment</li>
+                            <li>You'll be redirected back after payment</li>
+                        </ol>
+                    </div>
+
+                    <div class="loading" id="paymentLoading" style="display: none;">
+                        <div class="spinner"></div>
+                        <p>Processing payment...</p>
+                    </div>
+                </div>
+
+                <div class="payment-buttons">
+                    <button class="btn-cancel" onclick="closePaymentModal()">Cancel</button>
+                    <button id="proceedPaymentBtn" onclick="processPayment()" disabled>Proceed to Pay</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let emailIsValid = false;
+        let emailCheckTimeout = null;
+        let bookings = [];
+        let currentDate = new Date();
+        
+        // PayMongo Configuration
+        // IMPORTANT: Replace with your actual PayMongo PUBLIC key
+        // Get it from: https://dashboard.paymongo.com/developers/api-keys
+        // Use pk_test_... for testing, pk_live_... for production
+        const PAYMONGO_PUBLIC_KEY = 'pk_test_H5rhhjjZ8hNBk6aAFVfGQ71H';
+        
+        // You only need the PUBLIC key for GCash payments
+        // The SECRET key should NEVER be exposed in frontend code for security reasons
+
+        let selectedPaymentMethod = null;
+        let currentBookingData = null;
+        let currentPaymentAmount = 0;
+
+        // Payment Modal Functions
+        function selectPaymentMethod(method) {
+            selectedPaymentMethod = method;
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('selected');
+            });
+            document.querySelector(`[data-method="${method}"]`).classList.add('selected');
+            document.getElementById('proceedPaymentBtn').disabled = false;
+        }
+
+        function openPaymentModal(bookingData, amountUSD) {
+            currentBookingData = bookingData;
+            
+            // Convert USD to PHP (using real-time rate)
+            fetch('https://api.exchangerate-api.com/v4/latest/USD')
+                .then(response => response.json())
+                .then(data => {
+                    currentPaymentAmount = Math.round(amountUSD * data.rates.PHP);
+                    document.getElementById('paymentAmount').textContent = currentPaymentAmount.toFixed(2);
+                })
+                .catch(() => {
+                    // Fallback to approximate rate if API fails
+                    currentPaymentAmount = Math.round(amountUSD * 56);
+                    document.getElementById('paymentAmount').textContent = currentPaymentAmount.toFixed(2);
+                });
+
+            document.getElementById('paymentService').textContent = bookingData.service;
+            document.getElementById('paymentDate').textContent = new Date(bookingData.date).toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric'
+            });
+            document.getElementById('paymentTime').textContent = bookingData.time;
+
+            document.getElementById('paymentModal').classList.add('active');
+            document.getElementById('paymentMethodSelection').style.display = 'block';
+            document.getElementById('paymentProcessing').style.display = 'none';
+            selectedPaymentMethod = null;
+            document.getElementById('proceedPaymentBtn').disabled = true;
+        }
+
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('active');
+            document.getElementById('submitBtn').disabled = false;
+        }
+
+        // Create PayMongo Source for GCash (Simplified Direct Method)
+        async function processPayment() {
+            if (!selectedPaymentMethod) return;
+
+            document.getElementById('paymentMethodSelection').style.display = 'none';
+            document.getElementById('paymentProcessing').style.display = 'block';
+            document.getElementById('paymentLoading').style.display = 'block';
+            document.getElementById('proceedPaymentBtn').disabled = true;
+
+            try {
+                // Construct proper absolute URLs
+                let successUrl, failedUrl;
+                
+                if (window.location.protocol === 'file:') {
+                    // Testing locally - use placeholder URLs (won't work for actual payment)
+                    alert('⚠️ Local Testing Detected\n\nPayMongo requires a live URL (http:// or https://).\n\nFor testing:\n1. Upload to a web server\n2. Use a tool like ngrok\n3. Or use GitHub Pages\n\nFor now, using placeholder URLs...');
+                    successUrl = 'https://example.com/success';
+                    failedUrl = 'https://example.com/failed';
+                } else {
+                    // Production or web server
+                    const currentUrl = window.location.href.split('?')[0]; // Remove existing query params
+                    successUrl = currentUrl + '?payment=success';
+                    failedUrl = currentUrl + '?payment=failed';
+                }
+                
+                console.log('Success URL:', successUrl);
+                console.log('Failed URL:', failedUrl);
+                
+                // Create a GCash Source directly
+                const requestBody = {
+                    data: {
+                        attributes: {
+                            type: 'gcash',
+                            amount: Math.round(currentPaymentAmount * 100), // Amount in centavos
+                            currency: 'PHP',
+                            redirect: {
+                                success: successUrl,
+                                failed: failedUrl
+                            }
+                        }
+                    }
+                };
+                
+                console.log('Request body:', JSON.stringify(requestBody, null, 2));
+                
+                const sourceResponse = await fetch('https://api.paymongo.com/v1/sources', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Basic ' + btoa(PAYMONGO_PUBLIC_KEY + ':')
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const sourceData = await sourceResponse.json();
+                
+                console.log('Response status:', sourceResponse.status);
+                console.log('Response data:', sourceData);
+                
+                if (!sourceResponse.ok) {
+                    // Show detailed error information
+                    let errorDetails = '';
+                    if (sourceData.errors && sourceData.errors.length > 0) {
+                        errorDetails = sourceData.errors.map(err => 
+                            `${err.detail || err.code || 'Unknown error'}`
+                        ).join('\n');
+                    }
+                    console.error('Source creation error:', sourceData);
+                    throw new Error(errorDetails || 'Failed to create payment source');
+                }
+
+                // Store booking data temporarily
+                const tempBookingData = {
+                    ...currentBookingData,
+                    sourceId: sourceData.data.id,
+                    paymentAmount: currentPaymentAmount
+                };
+                sessionStorage.setItem('pendingBooking', JSON.stringify(tempBookingData));
+
+                // Redirect to GCash checkout URL
+                const checkoutUrl = sourceData.data.attributes.redirect.checkout_url;
+                window.location.href = checkoutUrl;
+
+            } catch (error) {
+                console.error('Payment error:', error);
+                document.getElementById('paymentLoading').style.display = 'none';
+                
+                let errorMessage = 'Payment processing failed:\n\n';
+                
+                if (error.message.includes('parameter_below_minimum')) {
+                    errorMessage += '❌ Amount is below minimum (₱100)';
+                } else if (error.message.includes('credentials') || error.message.includes('unauthorized')) {
+                    errorMessage += '❌ Invalid API key\n\nPlease check:\n1. Key starts with pk_test_ or pk_live_\n2. Key is from PayMongo dashboard\n3. No extra spaces in the key';
+                } else if (error.message.includes('redirect')) {
+                    errorMessage += '❌ Invalid redirect URL\n\nPayMongo requires:\n- Full URL with http:// or https://\n- Not file:// (local files)\n- Must be accessible from internet';
+                } else {
+                    errorMessage += error.message;
+                }
+                
+                alert(errorMessage);
+                document.getElementById('proceedPaymentBtn').disabled = false;
+                document.getElementById('paymentMethodSelection').style.display = 'block';
+                document.getElementById('paymentProcessing').style.display = 'none';
+            }
+        }
+
+        // Check for payment return
+        function checkPaymentStatus() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const paymentStatus = urlParams.get('payment');
+
+            if (paymentStatus) {
+                const pendingBooking = sessionStorage.getItem('pendingBooking');
+                
+                if (pendingBooking) {
+                    const bookingData = JSON.parse(pendingBooking);
+                    
+                    if (paymentStatus === 'success' || paymentStatus === 'processing') {
+                        // Save the booking
+                        saveBooking(bookingData);
+                        
+                        // Show success message
+                        document.getElementById('successMessage').style.display = 'block';
+                        document.getElementById('successMessage').textContent = 
+                            '✓ Payment successful! Your appointment has been confirmed.';
+                        
+                        // Clear pending booking
+                        sessionStorage.removeItem('pendingBooking');
+                        
+                        // Clear URL parameters
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                        
+                        setTimeout(() => {
+                            document.getElementById('successMessage').style.display = 'none';
+                        }, 5000);
+                    } else if (paymentStatus === 'failed') {
+                        alert('Payment was cancelled or failed. Please try booking again.');
+                        sessionStorage.removeItem('pendingBooking');
+                        window.history.replaceState({}, document.title, window.location.pathname);
+                    }
+                }
+            }
+        }
+
+        // Load bookings from memory
+        function loadBookings() {
+            return bookings;
+        }
+
+        // Save booking
+        function saveBooking(booking) {
+            bookings.push(booking);
+            renderCalendar();
+            renderBookingsList();
+        }
+
+        // Calendar functions
+        function renderCalendar() {
+            const calendarGrid = document.getElementById('calendarGrid');
+            const currentMonth = document.getElementById('currentMonth');
+            
+            const year = currentDate.getFullYear();
+            const month = currentDate.getMonth();
+            
+            const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
+                'July', 'August', 'September', 'October', 'November', 'December'];
+            
+            currentMonth.textContent = `${monthNames[month]} ${year}`;
+            
+            calendarGrid.innerHTML = '';
+            
+            const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+            dayHeaders.forEach(day => {
+                const header = document.createElement('div');
+                header.className = 'calendar-day-header';
+                header.textContent = day;
+                calendarGrid.appendChild(header);
+            });
+            
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+            
+            for (let i = 0; i < firstDay; i++) {
+                const emptyDay = document.createElement('div');
+                emptyDay.className = 'calendar-day empty';
+                calendarGrid.appendChild(emptyDay);
+            }
+            
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.className = 'calendar-day';
+                
+                const dayNumber = document.createElement('div');
+                dayNumber.className = 'calendar-day-number';
+                dayNumber.textContent = day;
+                dayCell.appendChild(dayNumber);
+                
+                if (year === today.getFullYear() && 
+                    month === today.getMonth() && 
+                    day === today.getDate()) {
+                    dayCell.classList.add('today');
+                }
+                
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const dayBookings = bookings.filter(b => b.date === dateStr);
+                
+                if (dayBookings.length > 0) {
+                    dayCell.classList.add('has-booking');
+                    const bookingCount = document.createElement('div');
+                    bookingCount.className = 'booking-count';
+                    bookingCount.textContent = `${dayBookings.length} booking${dayBookings.length > 1 ? 's' : ''}`;
+                    dayCell.appendChild(bookingCount);
+                }
+                
+                dayCell.addEventListener('click', () => {
+                    showBookingsForDay(dateStr, dayBookings);
+                });
+                
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        function showBookingsForDay(dateStr, dayBookings) {
+            if (dayBookings.length === 0) {
+                alert(`No appointments on ${new Date(dateStr).toLocaleDateString('en-US', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                })}`);
+                return;
+            }
+            
+            let message = `Appointments on ${new Date(dateStr).toLocaleDateString('en-US', { 
+                weekday: 'long', 
+                year: 'numeric', 
+                month: 'long', 
+                day: 'numeric' 
+            })}:\n\n`;
+            
+            dayBookings.forEach((booking, index) => {
+                message += `${index + 1}. ${booking.time} - ${booking.name}\n`;
+                message += `   Service: ${booking.service}\n`;
+                message += `   Phone: ${booking.phone}\n\n`;
+            });
+            
+            alert(message);
+        }
+
+        function renderBookingsList() {
+            const bookingsList = document.getElementById('bookingsList');
+            
+            if (bookings.length === 0) {
+                bookingsList.innerHTML = '<div class="no-bookings">No upcoming appointments yet</div>';
+                return;
+            }
+            
+            const sortedBookings = [...bookings].sort((a, b) => {
+                const dateCompare = new Date(a.date) - new Date(b.date);
+                if (dateCompare !== 0) return dateCompare;
+                return a.time.localeCompare(b.time);
+            });
+            
+            const today = new Date();
+            today.setHours(0, 0, 0, 0);
+            
+            const upcomingBookings = sortedBookings.filter(b => new Date(b.date) >= today);
+            
+            if (upcomingBookings.length === 0) {
+                bookingsList.innerHTML = '<div class="no-bookings">No upcoming appointments</div>';
+                return;
+            }
+            
+            bookingsList.innerHTML = upcomingBookings.slice(0, 10).map(booking => `
+                <div class="booking-item">
+                    <div class="booking-date">
+                        📅 ${new Date(booking.date).toLocaleDateString('en-US', { 
+                            weekday: 'short', 
+                            month: 'short', 
+                            day: 'numeric',
+                            year: 'numeric'
+                        })} at ${booking.time}
+                    </div>
+                    <div class="booking-details">
+                        <div><strong>${booking.name}</strong></div>
+                        <div class="booking-service">${booking.service}</div>
+                        <div>📞 ${booking.phone}</div>
+                        ${booking.notes ? `<div>📝 ${booking.notes}</div>` : ''}
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        document.getElementById('prevMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            renderCalendar();
+        });
+
+        document.getElementById('nextMonth').addEventListener('click', () => {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            renderCalendar();
+        });
+
+        // API 1: Email Validation
+        async function validateEmail(email) {
+            const emailStatus = document.getElementById('emailStatus');
+            const emailWarning = document.getElementById('emailWarning');
+            const validationDiv = document.getElementById('emailValidation');
+            
+            if (!email || !email.includes('@')) {
+                emailStatus.innerHTML = '';
+                emailIsValid = false;
+                return;
+            }
+
+            emailStatus.innerHTML = '<span class="status-badge status-checking">Checking...</span>';
+            
+            try {
+                const response = await fetch(`https://emailvalidation.abstractapi.com/v1/?api_key=YOUR_API_KEY&email=${encodeURIComponent(email)}`);
+                
+                if (!response.ok) {
+                    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                    emailIsValid = emailRegex.test(email);
+                    
+                    if (emailIsValid) {
+                        emailStatus.innerHTML = '<span class="status-badge status-valid">Format Valid</span>';
+                        validationDiv.innerHTML = `✓ Email format is valid: <strong>${email}</strong>`;
+                        emailWarning.style.display = 'none';
+                    } else {
+                        emailStatus.innerHTML = '<span class="status-badge status-invalid">Invalid</span>';
+                        validationDiv.innerHTML = '✗ Invalid email format';
+                        emailWarning.style.display = 'block';
+                    }
+                    return;
+                }
+
+                const data = await response.json();
+                emailIsValid = data.deliverability === 'DELIVERABLE' || data.is_valid_format?.value;
+                
+                if (emailIsValid) {
+                    emailStatus.innerHTML = '<span class="status-badge status-valid">Valid ✓</span>';
+                    validationDiv.innerHTML = `✓ Email verified: <strong>${email}</strong>`;
+                    emailWarning.style.display = 'none';
+                } else {
+                    emailStatus.innerHTML = '<span class="status-badge status-invalid">Invalid ✗</span>';
+                    validationDiv.innerHTML = '✗ This email may not be deliverable. Please check for typos.';
+                    emailWarning.style.display = 'block';
+                }
+            } catch (error) {
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                emailIsValid = emailRegex.test(email);
+                
+                if (emailIsValid) {
+                    emailStatus.innerHTML = '<span class="status-badge status-valid">Format Valid</span>';
+                    validationDiv.innerHTML = `✓ Email format is valid: <strong>${email}</strong>`;
+                    emailWarning.style.display = 'none';
+                } else {
+                    emailStatus.innerHTML = '<span class="status-badge status-invalid">Invalid</span>';
+                    validationDiv.innerHTML = '✗ Invalid email format';
+                    emailWarning.style.display = 'block';
+                }
+            }
+        }
+
+        document.getElementById('email').addEventListener('input', function(e) {
+            clearTimeout(emailCheckTimeout);
+            emailCheckTimeout = setTimeout(() => {
+                validateEmail(e.target.value);
+            }, 1000);
+        });
+
+        // API 2: Currency Converter
+        async function convertCurrency(usdAmount) {
+            const priceGrid = document.getElementById('priceGrid');
+            const currencyInfo = document.getElementById('currencyInfo');
+            const priceDisplay = document.getElementById('priceDisplay');
+            
+            if (!usdAmount || usdAmount <= 0) {
+                priceGrid.style.display = 'none';
+                priceDisplay.style.display = 'none';
+                currencyInfo.textContent = 'Select a service to see prices in multiple currencies';
+                return;
+            }
+
+            document.getElementById('usdPrice').textContent = usdAmount;
+            priceDisplay.style.display = 'flex';
+            currencyInfo.textContent = 'Converting to multiple currencies...';
+            
+            try {
+                const response = await fetch('https://api.exchangerate-api.com/v4/latest/USD');
+                const data = await response.json();
+                const rates = data.rates;
+                
+                document.getElementById('phpPrice').textContent = (usdAmount * rates.PHP).toFixed(2);
+                document.getElementById('eurPrice').textContent = (usdAmount * rates.EUR).toFixed(2);
+                document.getElementById('jpyPrice').textContent = (usdAmount * rates.JPY).toFixed(0);
+                document.getElementById('gbpPrice').textContent = (usdAmount * rates.GBP).toFixed(2);
+                
+                priceGrid.style.display = 'grid';
+                currencyInfo.textContent = 'Prices in different currencies';
+            } catch (error) {
+                currencyInfo.textContent = 'Unable to fetch exchange rates at the moment';
+            }
+        }
+
+        document.getElementById('service').addEventListener('change', function(e) {
+            const price = parseFloat(e.target.value);
+            convertCurrency(price);
+        });
+
+        // API 3: Weather-based recommendations
+        async function getWeatherRecommendation() {
+            const weatherInfo = document.getElementById('weatherInfo');
+            const weatherDetails = document.getElementById('weatherDetails');
+            const weatherRec = document.getElementById('weatherRec');
+            
+            try {
+                const response = await fetch('https://api.open-meteo.com/v1/forecast?latitude=10.3157&longitude=123.8854&current_weather=true');
+                const data = await response.json();
+                
+                const temp = data.current_weather.temperature;
+                const weatherCode = data.current_weather.weathercode;
+                
+                const weatherMap = {
+                    0: { desc: 'Clear sky', icon: '☀️', rec: 'Perfect day for a pampering session! Your nails will dry beautifully in this weather.' },
+                    1: { desc: 'Mainly clear', icon: '🌤️', rec: 'Lovely weather ahead! Great time to try our quick-dry gel polish.' },
+                    2: { desc: 'Partly cloudy', icon: '⛅', rec: 'Pleasant weather! Consider our relaxing spa package today.' },
+                    3: { desc: 'Overcast', icon: '☁️', rec: 'Cozy weather for an indoor treat! Perfect time for a full manicure.' },
+                    45: { desc: 'Foggy', icon: '🌫️', rec: 'Misty outside? Stay dry and treat yourself to our warm paraffin wax treatment.' },
+                    48: { desc: 'Foggy', icon: '🌫️', rec: 'Foggy conditions! Ideal for our soothing hand massage service.' },
+                    51: { desc: 'Light drizzle', icon: '🌦️', rec: 'Light rain outside! Opt for our quick-dry formula to head out sooner.' },
+                    61: { desc: 'Light rain', icon: '🌧️', rec: 'Rainy day special! Ask about our waterproof top coat for extra protection.' },
+                    63: { desc: 'Moderate rain', icon: '🌧️', rec: 'Rainy weather! Our long-lasting acrylic nails are perfect for wet conditions.' },
+                    80: { desc: 'Rain showers', icon: '🌦️', rec: 'Showers expected! Choose our durable gel manicure for lasting beauty.' },
+                    95: { desc: 'Thunderstorm', icon: '⛈️', rec: 'Stay cozy inside! Perfect time for our full spa package experience.' }
+                };
+                
+                const weather = weatherMap[weatherCode] || weatherMap[0];
+                
+                document.getElementById('weatherTemp').textContent = Math.round(temp);
+                document.getElementById('weatherDesc').textContent = weather.desc;
+                document.getElementById('weatherIcon').textContent = weather.icon;
+                weatherRec.textContent = '💅 ' + weather.rec;
+                
+                weatherDetails.style.display = 'grid';
+                weatherRec.style.display = 'block';
+                weatherInfo.innerHTML = `Current weather in <strong>Cebu City</strong>`;
+            } catch (error) {
+                weatherInfo.textContent = 'Weather information unavailable. Book your appointment anytime!';
+            }
+        }
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const errorDiv = document.getElementById('errorMessage');
+            const submitBtn = document.getElementById('submitBtn');
+            
+            if (!emailIsValid) {
+                errorDiv.style.display = 'block';
+                setTimeout(() => {
+                    errorDiv.style.display = 'none';
+                }, 3000);
+                return;
+            }
+            
+            const serviceValue = document.getElementById('service').value;
+            if (!serviceValue) {
+                alert('Please select a service');
+                return;
+            }
+            
+            submitBtn.disabled = true;
+            
+            const serviceName = document.getElementById('service').selectedOptions[0].text.split(' - ')[0];
+            const bookingData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                service: serviceName,
+                date: document.getElementById('date').value,
+                time: document.getElementById('time').value,
+                notes: document.getElementById('notes').value,
+                timestamp: new Date().toISOString()
+            };
+            
+            openPaymentModal(bookingData, parseFloat(serviceValue));
+        });
+
+        // Set minimum date to today
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('date').setAttribute('min', today);
+
+        // Initialize
+        getWeatherRecommendation();
+        renderCalendar();
+        renderBookingsList();
+        checkPaymentStatus();
+    </script>
+</body>
+</html>
